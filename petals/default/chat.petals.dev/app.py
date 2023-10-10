@@ -63,6 +63,7 @@ for model_info in config.MODELS:
         use_fast=True,
         max_new_tokens=40,
         do_sample=False,
+        device=config.DEVICE
         )
 
     local_llm = HuggingFacePipeline(pipeline=pipe)
