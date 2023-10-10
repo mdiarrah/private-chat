@@ -63,7 +63,7 @@ for model_info in config.MODELS:
         use_fast=True,
         max_new_tokens=100,
         do_sample=False,
-        use_cache=False,
+        #use_cache=False,
         device="cuda:0" #config.DEVICE
         )
 
