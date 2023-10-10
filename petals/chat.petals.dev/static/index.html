@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" class="js-site-favicon" type="image/png" href="./static/hive.png">
+    <title>Hive &ndash; Distributed Inference PoC</title>
+    <link href="./static/bootstrap.min.css" rel="stylesheet">
+    <link href="./static/style.css" rel="stylesheet">
+  </head>
+  <body class="dark-mode">
+
+<main>
+  <div class="position-relative overflow-hidden px-5 pt-1 m-md-4 text-center">
+    <div class="col-lg-6 col-md-8 p-md-3 mx-auto my-3" style="max-width: 700px;">
+      <div class="mb-4">
+        <div class="d-md-inline-block pe-md-4" >
+          <a target="_blank" href="https://hivenet.com" ><img src="./static/hive.png" height="60" ></a>
+        </div>
+        <h1 class="display-4 fw-bold d-md-inline-block white-color justify-content-center" style="font-size: 40pt; vertical-align: middle;">
+          hive
+          <span style="font-size: 25pt; color: #e1ff01;">Chat</span> <span style="font-size: 12pt; color: #c9d0d7df;">(pubic)</span>
+        </h1>
+      </div>
+      <div class="welcome mb-4">
+        <div>
+          <b>Welcome!</b> This PoC for <b>DELL</b> demonstrating distributed CPU-based inference with the <a target="_blank" class="model-name" href="https://huggingface.co/huggyllama/llama-7b">Llama-7B</a> model. In this PoC, all the blocks and weights of the Llama-7B model are distributed across a private
+          <a target="_blank" href="http://57.128.41.243:8888">cluster</a> of compute nodes.
+        </div>
+        <form id="settings">
+          <div class="mt-2">
+            <label class="group-label">Family:</label>
+            <div class="btn-group family-selector" role="group">
+              <input type="radio" class="btn-check" name="family" value="llama-2" id="family-llama-2">
+              <label class="btn btn-outline-primary" for="family-llama-2">Llama 2</label>
+              <input type="radio" class="btn-check" name="family" value="llama" id="family-llama" checked>
+              <label class="btn btn-outline-primary" for="family-llama">Llama</label>
+              <input type="radio" class="btn-check" name="family" value="bloom" id="family-bloom">
+              <label class="btn btn-outline-primary" for="family-bloom">BLOOM</label>
+            </div>
+          </div>
+          <div class="mt-2">
+            <label class="group-label">Model:</label>
+            <div class="model-selector btn-group" role="group" data-family="llama">
+              <input type="radio" class="btn-check" name="model" value="huggyllama/llama-7b" id="llama-7b-hf" checked>
+              <label class="btn btn-outline-primary" for="llama-7b-hf">Llama-7B</label>
+              <input type="radio" class="btn-check" name="model" value="timdettmers/guanaco-65b" id="model-guanaco-65b">
+              <label class="btn btn-outline-primary" for="model-guanaco-65b">Guanaco-65B</label>
+              <input type="radio" class="btn-check" name="model" value="huggyllama/llama-65b" id="model-llama-65b-hf">
+              <label class="btn btn-outline-primary" for="model-llama-65b-hf">Llama-65B</label>
+            </div>
+           
+            <div class="model-selector btn-group" role="group" data-family="llama-2" style="display: none;">
+              <input type="radio" class="btn-check" name="model" value="stabilityai/StableBeluga2" id="stablebeluga2">
+              <label class="btn btn-outline-primary" for="stablebeluga2">Stable Beluga 2 (70B)</label>
+              <input type="radio" class="btn-check" name="model" value="meta-llama/Llama-2-70b-chat-hf" id="meta-llama-2-70b-chat-hf">
+              <label class="btn btn-outline-primary" for="meta-llama-2-70b-chat-hf">Llama 2 (70B-chat)</label>
+            </div>
+            <div class="model-selector btn-group" role="group" data-family="bloom" style="display: none;">
+              <!-- <input type="radio" class="btn-check" name="model" value="bigscience/bloom" id="model-bloom">
+              <label class="btn btn-outline-primary" for="model-bloomz">BLOOM-176B</label> -->
+              <input type="radio" class="btn-check" name="model" value="bigscience/bloomz" id="model-bloomz">
+              <label class="btn btn-outline-primary" for="model-bloomz">BLOOMZ-176B</label>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Add a div to display response times -->
+      
+      <div class="dialogue">
+        <p class="human-replica">A chat between a curious human and a distributed Large Language Model (LLM)</p>
+        <p class="ai-replica"><span class="text">Assistant: Hi! How can I help you?</span></p>
+        <!-- <p class="response-times">ResponseTime: 0.0s</p> -->
+        <p class="human-replica"><textarea class="form-control" id="exampleTextarea" rows="2">Human: </textarea></p>
+      </div>
+      <p class="error-box" style="display: none;">
+        Request failed. <a class="retry-link" href="#">Retry</a><br>
+        <span class="error-message"></span>
+        <span class="out-of-capacity"><br>
+          <b>We're out of capacity</b> &mdash; attention caches of existing servers are full.
+          Please come back later, or
+          <a target="_blank" href="https://github.com/bigscience-workshop/petals#connect-your-gpu-and-increase-petals-capacity">connect your GPU</a>
+          to increase Petals capacity now!
+        </span>
+      </p>
+
+      <p class="acknowledgements mt-5 pt-3">
+        <!-- <a class="show-few-shot" href="#">Few-shot mode</a><br> -->
+        <b>Shift+Enter</b> inserts newlines.<br>
+        See source code and API docs on <a target="_blank" href="https://github.com/petals-infra/chat.petals.dev">GitHub</a>.
+      </p>
+    </div>
+  </div>
+</main>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="./static/autosize.min.js"></script>
+    <script src="./static/chat.js?v=4"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LENBCEYH86"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-LENBCEYH86');
+    </script>
+  </body>
+</html>
