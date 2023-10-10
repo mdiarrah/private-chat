@@ -19,6 +19,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain.vectorstores import Chroma
 import os
+import torch
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 
 # from dotenv import load_dotenv
@@ -47,11 +48,11 @@ for model_info in config.MODELS:
     )
     model = model.to(config.DEVICE)
     generation_config = GenerationConfig.from_pretrained(model_info.repo)
-    max_ctx_size = 3048 #2048
+    max_ctx_size = 2048 #2048
     kwargs = {
             "n_ctx": max_ctx_size,
             "max_tokens": max_ctx_size,
-            "n_threads": psutil.cpu_count(logical=True),
+            "n_threads": psutil.cpu_count(logical=False),
             "max_tokens": max_ctx_size
     }
     pipe = pipeline(
@@ -61,10 +62,10 @@ for model_info in config.MODELS:
         generation_config=generation_config,
         model_kwargs=kwargs,
         use_fast=True,
-        max_new_tokens=100,
+        max_new_tokens=80,
         do_sample=False,
         #use_cache=False,
-        device="cuda:0" #config.DEVICE
+        device=torch.device('cuda') #config.DEVICE #"cuda:0"
         )
 
     local_llm = HuggingFacePipeline(pipeline=pipe)
