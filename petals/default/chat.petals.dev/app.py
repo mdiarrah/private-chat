@@ -35,7 +35,7 @@ logger = hivemind.get_logger(__file__)
 models = {}
 for model_info in config.MODELS:
     logger.info(f"Loading tokenizer for {model_info.repo}")
-    tokenizer = AutoTokenizer.from_pretrained(model_info.repo, add_bos_token=False, use_fast=False)
+    tokenizer = AutoTokenizer.from_pretrained(model_info.repo, add_bos_token=False, use_fast=True)
 
     logger.info(f"Loading model {model_info.repo} with adapter {model_info.adapter} and dtype {config.TORCH_DTYPE}")
     # We set use_fast=False since LlamaTokenizerFast takes a long time to init
@@ -47,7 +47,7 @@ for model_info in config.MODELS:
         max_retries=3,
     )
     model = model.to(config.DEVICE)
-    generation_config = GenerationConfig.from_pretrained(model_info.repo,use_cache=False)
+    generation_config = GenerationConfig.from_pretrained(model_info.repo)
     max_ctx_size = 2048 #2048
     kwargs = {
             "n_ctx": max_ctx_size,

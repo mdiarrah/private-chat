@@ -58,8 +58,12 @@ def http_api_generate():
         outputs = safe_decode(tokenizer, outputs[0, n_input_tokens:])
         '''
         logger.info(f"generate(), outputs={repr(answer)}")
+        topAnswer = answer.split("\n")[0]
+        combined = repr(answer)
+        logger.info(f"generate(), clean outputs={combined}")
+        stop = True
 
-        return jsonify(ok=True, outputs=answer)
+        return jsonify(ok=True, outputs=topAnswer)
     except Exception:
         return jsonify(ok=False, traceback=format_exc())
 
