@@ -47,7 +47,7 @@ for model_info in config.MODELS:
         max_retries=3,
     )
     model = model.to(config.DEVICE)
-    generation_config = GenerationConfig.from_pretrained(model_info.repo)
+    generation_config = GenerationConfig.from_pretrained(model_info.repo,use_cache=False)
     max_ctx_size = 2048 #2048
     kwargs = {
             "n_ctx": max_ctx_size,
@@ -62,7 +62,7 @@ for model_info in config.MODELS:
         generation_config=generation_config,
         model_kwargs=kwargs,
         use_fast=True,
-        max_new_tokens=80,
+        max_new_tokens=30,
         do_sample=False,
         #use_cache=False,
         device=torch.device('cuda') #config.DEVICE #"cuda:0"
