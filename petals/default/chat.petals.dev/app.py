@@ -47,11 +47,11 @@ for model_info in config.MODELS:
     )
     model = model.to(config.DEVICE)
     generation_config = GenerationConfig.from_pretrained(model_info.repo)
-    max_ctx_size = 500 #2048
+    max_ctx_size = 3048 #2048
     kwargs = {
             "n_ctx": max_ctx_size,
             "max_tokens": max_ctx_size,
-            "n_threads": psutil.cpu_count(logical=False),
+            "n_threads": psutil.cpu_count(logical=True),
             "max_tokens": max_ctx_size
     }
     pipe = pipeline(
@@ -61,9 +61,10 @@ for model_info in config.MODELS:
         generation_config=generation_config,
         model_kwargs=kwargs,
         use_fast=True,
-        max_new_tokens=40,
+        max_new_tokens=100,
         do_sample=False,
-        device=config.DEVICE
+        use_cache=False,
+        device="cuda:0" #config.DEVICE
         )
 
     local_llm = HuggingFacePipeline(pipeline=pipe)
