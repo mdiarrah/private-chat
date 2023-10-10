@@ -42,7 +42,7 @@ def http_api_generate():
         #else:
             #n_input_tokens = 0
 
-        res = qa(inputs)
+        res = qa({"query": inputs})#qa(inputs)
         answer, docs = res["result"], []
         '''
         outputs = model.generate(

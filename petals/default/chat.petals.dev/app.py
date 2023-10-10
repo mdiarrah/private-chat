@@ -21,6 +21,7 @@ from langchain.vectorstores import Chroma
 import os
 import torch
 from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.prompts import ChatPromptTemplate
 
 # from dotenv import load_dotenv
 from chromadb.config import Settings
@@ -93,7 +94,7 @@ for model_info in config.MODELS:
         chain_type="stuff",
         retriever=retriever,
         return_source_documents=False,
-        chain_type_kwargs={"prompt": prompt, "memory": memory},
+        #chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
 
     model_name = model_info.name
