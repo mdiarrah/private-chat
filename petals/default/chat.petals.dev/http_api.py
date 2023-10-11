@@ -58,8 +58,8 @@ def http_api_generate():
         outputs = safe_decode(tokenizer, outputs[0, n_input_tokens:])
         '''
         logger.info(f"generate(), outputs={repr(answer)}")
-        topAnswer = answer.split("\n")[0]
-        combined = repr(answer)
+        topAnswer = answer.split("Question")[0].strip()
+        combined = repr(topAnswer)
         logger.info(f"generate(), cleanoutputs={combined}")
         stop = True
 
