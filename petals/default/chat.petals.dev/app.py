@@ -75,7 +75,7 @@ for model_info in config.MODELS:
             "n_threads": psutil.cpu_count(logical=False),
             "max_tokens": max_ctx_size
     }
-    stop_tokens = [["Question", ":"], ["Answer", ":"]]
+    stop_tokens = [["Question", ":",r"\n\n",r"\n"], ["Answer", ":"]]
     stopping_criteria = StoppingCriteriaList(
     [StopGenerationCriteria(stop_tokens, tokenizer, model.device)]
 )
