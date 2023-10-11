@@ -53,7 +53,7 @@ def ws_api_generate(ws):
             while not stop:
                 res = qa(UserInput)#qa(inputs)
                 answer, docs = res["result"], []
-                topAnswer = answer.split("Question")[0].strip()
+                topAnswer = answer.split("\n")[0]
                 combined = repr(answer)
                 stop = True
                 #stop = stop_sequence is None or combined.endswith(stop_sequence)
