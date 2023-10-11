@@ -2,6 +2,8 @@ import hivemind
 from flask import Flask
 from flask_cors import CORS
 from flask_sock import Sock
+from transformers import StoppingCriteria, StoppingCriteriaList
+from typing import List
 import psutil
 from transformers import AutoTokenizer
 
@@ -31,6 +33,23 @@ ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 SOURCE_DIRECTORY = f"{ROOT_DIRECTORY}/SOURCE_DOCUMENTS"
 PERSIST_DIRECTORY = f"{ROOT_DIRECTORY}/DB"
 
+class StopGenerationCriteria(StoppingCriteria):
+    def __init__(
+        self, tokens: List[List[str]], tokenizer: AutoTokenizer, device: torch.device
+    ):
+        stop_token_ids = [tokenizer.convert_tokens_to_ids(t) for t in tokens]
+        self.stop_token_ids = [
+            torch.tensor(x, dtype=torch.long, device=device) for x in stop_token_ids
+        ]
+ 
+    def __call__(
+        self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs
+    ) -> bool:
+        for stop_ids in self.stop_token_ids:
+            if torch.eq(input_ids[0][-len(stop_ids) :], stop_ids).all():
+                return True
+        return False
+
 logger = hivemind.get_logger(__file__)
 
 models = {}
@@ -56,6 +75,10 @@ for model_info in config.MODELS:
             "n_threads": psutil.cpu_count(logical=False),
             "max_tokens": max_ctx_size
     }
+    stop_tokens = [["Question", ":"], ["Answer", ":"]]
+    stopping_criteria = StoppingCriteriaList(
+    [StopGenerationCriteria(stop_tokens, tokenizer, model.device)]
+)
     pipe = pipeline(
         "text-generation",
         model=model,
@@ -63,8 +86,9 @@ for model_info in config.MODELS:
         generation_config=generation_config,
         model_kwargs=kwargs,
         use_fast=True,
-        max_new_tokens=30,
+        max_new_tokens=50,
         do_sample=False,
+        stopping_criteria=stopping_criteria,
         #use_cache=False,
         device=torch.device('cuda') #config.DEVICE #"cuda:0"
         )
@@ -82,9 +106,8 @@ for model_info in config.MODELS:
 
     {context}
 
-    {history}
     Question: {question}
-    Helpful Answer:"""
+    Answer:"""
 
     prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
     memory = ConversationBufferMemory(input_key="question", memory_key="history")
@@ -94,7 +117,7 @@ for model_info in config.MODELS:
         chain_type="stuff",
         retriever=retriever,
         return_source_documents=False,
-        #chain_type_kwargs={"prompt": prompt, "memory": memory},
+        chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
 
     model_name = model_info.name

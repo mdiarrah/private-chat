@@ -42,7 +42,7 @@ def http_api_generate():
         #else:
             #n_input_tokens = 0
 
-        res = qa({"query": inputs})#qa(inputs)
+        res = qa(inputs)
         answer, docs = res["result"], []
         '''
         outputs = model.generate(
@@ -60,7 +60,7 @@ def http_api_generate():
         logger.info(f"generate(), outputs={repr(answer)}")
         topAnswer = answer.split("\n")[0]
         combined = repr(answer)
-        logger.info(f"generate(), clean outputs={combined}")
+        logger.info(f"generate(), cleanoutputs={combined}")
         stop = True
 
         return jsonify(ok=True, outputs=topAnswer)
