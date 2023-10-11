@@ -63,7 +63,7 @@ for model_info in config.MODELS:
         generation_config=generation_config,
         model_kwargs=kwargs,
         use_fast=True,
-        max_new_tokens=30,
+        max_new_tokens=50,
         do_sample=False,
         #use_cache=False,
         device=torch.device('cuda') #config.DEVICE #"cuda:0"
