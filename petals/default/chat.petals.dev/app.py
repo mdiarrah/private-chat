@@ -82,11 +82,10 @@ for model_info in config.MODELS:
 
     {context}
 
-    {history}
     Question: {question}
     Answer:"""
 
-    prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
+    prompt = PromptTemplate(input_variables=["context", "question"], template=template)
     memory = ConversationBufferMemory(input_key="question", memory_key="history")
 
     qa = RetrievalQA.from_chain_type(
@@ -94,7 +93,7 @@ for model_info in config.MODELS:
         chain_type="stuff",
         retriever=retriever,
         return_source_documents=False,
-        chain_type_kwargs={"prompt": prompt, "memory": memory},
+        chain_type_kwargs={"prompt": prompt}#, "memory": memory},
     )
 
     model_name = model_info.name
