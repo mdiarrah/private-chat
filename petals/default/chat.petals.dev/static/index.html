@@ -7,6 +7,48 @@
     <title>HiveChat &ndash; Hive Distributed Inference PoC</title>
     <link href="./static/bootstrap.min.css" rel="stylesheet">
     <link href="./static/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("uploadForm");
+        const loadingIndicator = document.getElementById("loading-indicator");
+        const resultMessage = document.getElementById("result-message");
+        
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+          resultMessage.style.display = "none"
+  
+          // Show the loading indicator with the spinning icon
+          loadingIndicator.style.display = "block";
+          loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+         
+          fetch("/api/v1/updatedb", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.text())
+            .then((responseText) => {
+              loadingIndicator.style.display = "none";
+
+              if (responseText.trim() === "OK") {
+                    resultMessage.style.color = "green";
+                } else {
+                    resultMessage.style.color = "red";
+                }
+
+                resultMessage.textContent = responseText;
+                resultMessage.style.display = "block";
+                
+            })
+            .catch((error) => {
+              console.error("Error uploading file:", error);
+              loadingIndicator.style.display = "none";
+              resultMessage.style.display = "none"
+            });
+        });
+      });
+    </script>
   </head>
   <body class="dark-mode">
 
@@ -66,7 +108,24 @@
             </div>
           </div>
         </form>
+        <br>
+        <div>
+        <form id="uploadForm" method="POST" action="" enctype="multipart/form-data">
+          <div class="form-group">
+              <label for="fileUpload"><b>Update knowledge DB:</b></label>
+              <input type="file" name="file" multiple>
+          </div>
+          <div class="submit-container">
+              <button type="submit">Submit</button>
+              <div id="loading-indicator">
+              </div>
+          </div>
+      </form>
+    </div>
+      <div id="result-message" style="color: red;"></div> <!-- Message will be displayed here -->
       </div>
+
+   
 
       <!-- Add a div to display response times -->
       

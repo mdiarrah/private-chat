@@ -8,6 +8,7 @@ import torch
 import config
 from app import sock, models
 from utils import safe_decode
+import re
 
 logger = hivemind.get_logger(__file__)
 
@@ -46,6 +47,7 @@ def ws_api_generate(ws):
                     temp1 = temp0[len(temp0)-1].split("###")
                     if len(temp1) > 0:
                         UserInput = temp1[0].strip()
+                        UserInput = UserInput.replace('Human:', '')
                 logger.info(f"ws.generate.step(), inputs={repr(inputs)}")
                 logger.info(f"ws.generate.step(), UserInput={repr(UserInput)}")
             stop_sequence = request.get("stop_sequence")
@@ -62,9 +64,12 @@ def ws_api_generate(ws):
                 #        if combined.endswith(seq):
                 #            stop = True
                 if stop:
-                    logger.info(f"ws.generate.step(), all_outputs={topAnswer}, stop={stop}")
+                    logger.info(f"ws.generate.step(), all_outputs={answer}, stop={stop}")
                     token_count = len(combined.split())
-                    ws.send(json.dumps({"ok": True, "outputs": topAnswer, "stop": stop, "token_count": token_count}))
+                    # Use regular expressions to remove lines starting with 'Question' or 'Answer'
+                    clean_answer = re.sub(r'^\s*(Question:|Answer:|Question|Answer).*$', '', answer, flags=re.MULTILINE)
+                    #print(text_without_questions_and_answers)
+                    ws.send(json.dumps({"ok": True, "outputs": clean_answer.strip(), "stop": stop, "token_count": token_count}))
         '''
         with model.inference_session(max_length=request["max_length"]) as session:
             ws.send(json.dumps({"ok": True}))

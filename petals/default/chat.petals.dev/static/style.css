@@ -1,3 +1,48 @@
+/* Style the submit button */
+/*input[type="submit"] {
+  background-color: black;
+  color: grey;
+  border: none;
+  padding: 10px 20px;
+}*/
+
+/* Style the input field */
+/*input[type="file"] {
+  background-color: black;
+  color: grey;
+  border: 1px solid grey;
+  padding: 10px;
+}*/
+
+/* Style the container for submit button and spinner */
+.submit-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-container {
+  /*background-color: rgb(26, 24, 24);*/
+  color: rgb(15, 14, 14);
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+/* Style the loading indicator (spinner) */
+#loading-indicator {
+  margin-left: 10px; /* Add spacing between the button and the spinner */
+  font-size: 16px; /* Adjust the size as needed */
+  color: grey;
+}
+/* Add CSS styles for the loading indicator */
+/*#loading-indicator {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 25px;
+}*/
+
 .container {
   max-width: 960px;
 }
@@ -148,6 +193,30 @@ main p {
   max-width: 360px;
   text-align: left;
   word-wrap: break-word;
+}
+
+.db-settings {
+  border: 1px solid #87969a;
+  border-radius: 10px;
+  padding: 10px 15px;
+  width: 100%;
+  max-width: 360px;
+  text-align: left;
+  word-wrap: break-word;
+  background-color: #c0d6e9
+}
+
+.db-settings .group-label {
+  padding-left: 0;
+  padding-right: 5px;
+}
+
+.db-settings label {
+  padding: 1px 7px;
+}
+
+.db-settings label, .db-settings input {
+  box-shadow: none !important;
 }
 
 .human-replica, .ai-replica, .error-message {
