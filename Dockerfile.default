@@ -28,6 +28,7 @@ COPY . petals/
 RUN pip install --no-cache-dir -e petals
 COPY petals/default/chat.petals.dev/ /home/petals/chat.petals.dev/
 WORKDIR /home/petals/chat.petals.dev
+RUN mkdir SOURCE_DOCUMENTS
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-private.txt 
 
